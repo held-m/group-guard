@@ -108,7 +108,7 @@ func TestFilter(t *testing.T) {
 				t.Errorf("FieldWithTwoGroup: %v", field.Type.Kind())
 			}
 		case "FieldWithoutGroup":
-			if field.Type.Kind() != reflect.Invalid {
+			if field.Type.Kind() != reflect.String {
 				t.Errorf("FieldWithoutGroup: %v", field.Type.Kind())
 			}
 		case "SubTestStruct":
@@ -125,7 +125,7 @@ func TestFilter(t *testing.T) {
 						t.Errorf("FieldWithTwoGroup: %v", subField.Type.Kind())
 					}
 				case "FieldWithoutGroup":
-					if subField.Type.Kind() != reflect.Invalid {
+					if subField.Type.Kind() != reflect.String {
 						t.Errorf("FieldWithoutGroup: %v", subField.Type.Kind())
 					}
 				}

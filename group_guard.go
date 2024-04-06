@@ -3,35 +3,37 @@ package groupguard
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
 // Filter is a function that filters the group members based on the group's rules
-func Filter(groups []string, obj interface{}) (reflect.Value, error) {
+func Filter[T interface{}](groups []string, obj T) (T, error) {
 	objType := reflect.TypeOf(obj)
 	objValue := reflect.ValueOf(obj)
 
 	newObj := reflect.New(objType).Elem()
 
 	if objValue.Kind() != reflect.Struct {
-		return newObj, errors.New("obj must be a struct")
+		return newObj.Interface().(T), errors.New("obj must be a struct")
 	}
 
 	for i := 0; i < objType.NumField(); i++ {
 		if objType.Field(i).Type.Kind() == reflect.Struct {
 			newSubObj, err := Filter(groups, objValue.Field(i).Interface())
 			if err != nil {
-				return newObj, err
+				return newObj.Interface().(T), err
 			}
-			newObj.Field(i).Set(newSubObj)
+			newObj.Field(i).Set(reflect.ValueOf(newSubObj))
 			continue
 		}
 
 		addField(groups, objType, objValue, newObj, i)
 	}
 
-	return newObj, nil
+	fmt.Println(newObj.Interface().(T))
+	return newObj.Interface().(T), nil
 }
 
 func addField(
